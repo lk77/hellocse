@@ -10,7 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Database\Factories\User\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
@@ -33,6 +33,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public $guard_name = ['web', 'api'];
 
     /**
      * Get the attributes that should be cast.
