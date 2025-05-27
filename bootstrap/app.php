@@ -11,8 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // We don't redirect when unauthenticated
+        $middleware->redirectGuestsTo(function () {
+            return null;
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // We always render as json
+        $exceptions->shouldRenderJsonWhen(function () {
+            return true;
+        });
     })->create();
