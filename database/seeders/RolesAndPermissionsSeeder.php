@@ -16,7 +16,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = Role::query()->firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
 
         $admin->syncPermissions([
-            Permission::query()->firstOrCreate(['name' => 'profile.store', 'guard_name' => 'api']),
+            Permission::query()->firstOrCreate(['name' => 'profile.create', 'guard_name' => 'api']),
             Permission::query()->firstOrCreate(['name' => 'profile.update', 'guard_name' => 'api']),
             Permission::query()->firstOrCreate(['name' => 'profile.delete', 'guard_name' => 'api']),
             Permission::query()->firstOrCreate(['name' => 'profile.comment.store', 'guard_name' => 'api']),

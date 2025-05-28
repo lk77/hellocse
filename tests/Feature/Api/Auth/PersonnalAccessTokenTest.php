@@ -1,13 +1,11 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Api\Auth;
 
 use App\Models\User\User;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\Passport\Client;
-use Laravel\Passport\Database\Factories\ClientFactory;
 use Tests\TestCase;
 
 class PersonnalAccessTokenTest extends TestCase
@@ -18,9 +16,6 @@ class PersonnalAccessTokenTest extends TestCase
     {
         // We create a user
         $user = User::factory()->create();
-
-        /** @var Client $client We create a personal access token client */
-        $client = ClientFactory::new()->asPersonalAccessTokenClient()->create();
 
         // We create a token
         $result = $user->createToken('test');
@@ -34,7 +29,7 @@ class PersonnalAccessTokenTest extends TestCase
 
         // We check that we are correctly authenticated
         $this->assertSame($token->getKey(), $json['oauth_access_token_id']);
-        $this->assertSame($client->getKey(), $json['oauth_client_id']);
+        $this->assertSame($this->personalAccessTokenClient->getKey(), $json['oauth_client_id']);
         $this->assertEquals($user->getAuthIdentifier(), $json['oauth_user_id']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Profile;
 
+use App\Enums\Profile\ProfileStatus;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,14 +30,16 @@ class ProfileFactory extends Factory
             'lastname' => $this->faker->lastName(),
             'image_original_name' => $image->originalName,
             'image_name' => $image->name,
-            'user_id' => User::factory()
+            'status' => ProfileStatus::active->name,
+            'user_id' => User::factory(),
         ];
     }
 
-    private function image(): object {
+    private function image(): object
+    {
         // Generate a file name
-        $originalName = $this->faker->colorName() . '-' . $this->faker->word() . '.jpeg';
-        $name = sha1($originalName) . '.jpeg';
+        $originalName = $this->faker->colorName().'-'.$this->faker->word().'.jpeg';
+        $name = sha1($originalName).'.jpeg';
 
         // The path of the file
         $path = '/tmp/'.$name;
