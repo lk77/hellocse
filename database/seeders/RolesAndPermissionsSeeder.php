@@ -19,7 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::query()->firstOrCreate(['name' => 'profile.create', 'guard_name' => 'api']),
             Permission::query()->firstOrCreate(['name' => 'profile.update', 'guard_name' => 'api']),
             Permission::query()->firstOrCreate(['name' => 'profile.delete', 'guard_name' => 'api']),
-            Permission::query()->firstOrCreate(['name' => 'profile.comment.store', 'guard_name' => 'api']),
+            Permission::query()->firstOrCreate(['name' => 'comment.create', 'guard_name' => 'api']),
         ]);
     }
 }

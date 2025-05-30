@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Api\Profile;
 
-use App\Data\ProfileData;
+use App\Data\Profile\ProfileData;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Profile;
 
-use App\Data\ProfileData;
+use App\Data\Profile\ProfileData;
 use App\Enums\Profile\ProfileStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Profile\DestroyProfileRequest;
@@ -18,7 +18,7 @@ use Illuminate\Http\JsonResponse;
 class ProfileController extends Controller
 {
     public function __construct(
-        private readonly ProfileServiceInterface $profileService
+        private readonly ProfileServiceInterface $profileService,
     ) {}
 
     /**

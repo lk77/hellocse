@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Interfaces\Services\Profile\CommentServiceInterface;
 use App\Interfaces\Services\Profile\ProfileServiceInterface;
+use App\Services\Profile\EloquentCommentService;
 use App\Services\Profile\EloquentProfileService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProfileServiceInterface::class, EloquentProfileService::class);
+        $this->app->bind(CommentServiceInterface::class, EloquentCommentService::class);
     }
 
     /**

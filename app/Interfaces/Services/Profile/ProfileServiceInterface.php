@@ -2,10 +2,12 @@
 
 namespace App\Interfaces\Services\Profile;
 
-use App\Data\ProfileData;
+use App\Data\Profile\ProfileData;
 
 interface ProfileServiceInterface
 {
+    public function get(int $id): ProfileData;
+
     public function getAll(): \Illuminate\Support\Collection;
 
     public function create(ProfileData $data): ProfileData;

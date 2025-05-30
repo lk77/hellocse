@@ -2,7 +2,7 @@
 
 namespace App\Services\Profile;
 
-use App\Data\ProfileData;
+use App\Data\Profile\ProfileData;
 use App\Enums\Profile\ProfileStatus;
 use App\Interfaces\Services\Profile\ProfileServiceInterface;
 use App\Models\Profile\Profile;
@@ -17,10 +17,10 @@ class EloquentProfileService implements ProfileServiceInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection<int, Profile>
      */
-    public function get(string $id): ProfileData
+    public function get(int $id): ProfileData
     {
         // We retrieve the profile
-        $profile = Profile::query()->findOrFail($id);
+        $profile = Profile::query()->with('user')->findOrFail($id);
 
         // We return the profile data
         return ProfileData::from($profile);

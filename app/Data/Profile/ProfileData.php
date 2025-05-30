@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Data;
+namespace App\Data\Profile;
 
 use App\Enums\Profile\ProfileStatus;
 use App\Models\User\User;
@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 class ProfileData extends Data
 {
     public function __construct(
-        public ?string $id,
+        public ?int $id,
         public string $firstname,
         public string $lastname,
         public ?UploadedFile $image,
