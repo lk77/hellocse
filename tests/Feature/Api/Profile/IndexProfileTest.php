@@ -32,7 +32,7 @@ class IndexProfileTest extends TestCase
             $profileData = $json['data'][$index];
 
             // We check the attributes
-            $this->assertSame((string) $profile->id, $profileData['id']);
+            $this->assertSame($profile->id, $profileData['id']);
             $this->assertSame($profile->firstname, $profileData['firstname']);
             $this->assertSame($profile->lastname, $profileData['lastname']);
             $this->assertSame($profile->image_original_name, $profileData['image_original_name']);
@@ -61,7 +61,7 @@ class IndexProfileTest extends TestCase
             $profileData = $json['data'][$index];
 
             // We check the attributes
-            $this->assertSame((string) $profile->id, $profileData['id']);
+            $this->assertSame($profile->id, $profileData['id']);
             $this->assertSame($profile->firstname, $profileData['firstname']);
             $this->assertSame($profile->lastname, $profileData['lastname']);
             $this->assertSame($profile->image_original_name, $profileData['image_original_name']);
