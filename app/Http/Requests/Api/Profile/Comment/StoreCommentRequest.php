@@ -13,7 +13,7 @@ class StoreCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('api')->check() && $this->user('api')->can('create', Comment::class);
+        return auth('api')->check() && $this->user('api')?->can('create', Comment::class);
     }
 
     /**
@@ -24,7 +24,7 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|max:1024',
+            'content'    => 'required|string|max:1024',
             'profile_id' => ['required', 'integer', app(UniqueComment::class)],
         ];
     }

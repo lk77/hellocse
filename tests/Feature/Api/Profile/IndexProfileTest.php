@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class IndexProfileTest extends TestCase
 {
-
     public function test_can_get_profiles_while_authenticated(): void
     {
         // We create a user
@@ -24,7 +23,18 @@ class IndexProfileTest extends TestCase
         // We create a token
         $result = $user->createToken('test');
 
-        // We retrieve the json from the endpoint
+        /** @var array{
+         *           data: array<integer, array{
+         *               id: string,
+         *               firstname: string,
+         *               lastname: string,
+         *               image_original_name: string,
+         *               image_name: string,
+         *               status: string,
+         *               user_id: string
+         *           }>
+         * } $json We retrieve the json from the endpoint
+         */
         $json = $this->withToken($result->accessToken)->get(route('profile.index'))->json();
 
         foreach ($profiles as $index => $profile) {
@@ -53,7 +63,18 @@ class IndexProfileTest extends TestCase
         $profiles = Profile::factory(5)->create(['status' => ProfileStatus::active->name]);
         Profile::factory(5)->create(['status' => ProfileStatus::inactive->name]);
 
-        // We retrieve the json from the endpoint
+        /** @var array{
+         *           data: array<integer, array{
+         *               id: string,
+         *               firstname: string,
+         *               lastname: string,
+         *               image_original_name: string,
+         *               image_name: string,
+         *               status: string,
+         *               user_id: string
+         *           }>
+         * } $json We retrieve the json from the endpoint
+         */
         $json = $this->get(route('profile.index'))->json();
 
         foreach ($profiles as $index => $profile) {

@@ -3,8 +3,10 @@
 namespace Tests\Feature\Api\Profile;
 
 use App\Models\Profile\Profile;
+use App\Models\User\User;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class DeleteProfileTest extends TestCase
 {
@@ -14,6 +16,7 @@ class DeleteProfileTest extends TestCase
         $profile = Profile::factory()->create();
 
         // We give the permission to delete a profile
+        Assert::isInstanceOf($profile->user, User::class);
         $profile->user->givePermissionTo(Permission::query()->where(['name' => 'profile.delete', 'guard_name' => 'api'])->firstOrFail());
 
         // We create a token
@@ -24,9 +27,9 @@ class DeleteProfileTest extends TestCase
 
         // The profile should be gone
         $this->assertDatabaseMissing('profiles', [
-            'id' => $profile->id,
+            'id'        => $profile->id,
             'firstname' => $profile->firstname,
-            'lastname' => $profile->lastname,
+            'lastname'  => $profile->lastname,
         ]);
     }
 

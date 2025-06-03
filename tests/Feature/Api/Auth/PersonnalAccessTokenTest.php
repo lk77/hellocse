@@ -6,7 +6,10 @@ use App\Models\User\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Passport\AccessToken;
+use Laravel\Passport\Token;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class PersonnalAccessTokenTest extends TestCase
 {
@@ -21,10 +24,31 @@ class PersonnalAccessTokenTest extends TestCase
         $result = $user->createToken('test');
         $token = $result->getToken();
 
-        // We create a route to check the auth
-        Route::get('/currentAccessToken', fn (Request $request) => $request->user()->currentAccessToken()->toJson())->middleware('auth:api');
+        Assert::isInstanceOf($token, Token::class);
 
-        // We retrieve the json from the endpoint
+        // We create a route to check the auth
+        Route::get('/currentAccessToken', function (Request $request) {
+            $user = $request->user();
+
+            if ($user) {
+                /**
+                 * @var AccessToken<string> $currentAccessToken
+                 */
+                $currentAccessToken = $user->currentAccessToken();
+                Assert::isInstanceOf($currentAccessToken, AccessToken::class);
+
+                return $currentAccessToken->toJson();
+            }
+
+            return response('', 500);
+        })->middleware('auth:api');
+
+        /** @var array{
+         *           oauth_access_token_id: string,
+         *           oauth_client_id: string,
+         *           oauth_user_id: string
+         * } $json We retrieve the json from the endpoint
+         */
         $json = $this->withToken($result->accessToken)->get('/currentAccessToken')->assertSuccessful()->json();
 
         // We check that we are correctly authenticated

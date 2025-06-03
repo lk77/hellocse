@@ -8,6 +8,9 @@ interface ProfileServiceInterface
 {
     public function get(int $id): ProfileData;
 
+    /**
+     * @return \Illuminate\Support\Collection<int, ProfileData>
+     */
     public function getAll(): \Illuminate\Support\Collection;
 
     public function create(ProfileData $data): ProfileData;

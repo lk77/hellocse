@@ -14,7 +14,7 @@ class StoreProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('api')->check() && $this->user('api')->can('create', Profile::class);
+        return auth('api')->check() && $this->user('api')?->can('create', Profile::class);
     }
 
     /**
@@ -26,9 +26,9 @@ class StoreProfileRequest extends FormRequest
     {
         return [
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png',
-            'status' => [
+            'lastname'  => 'required|string|max:255',
+            'image'     => 'required|image|mimes:jpeg,png',
+            'status'    => [
                 'required',
                 Rule::in(collect(ProfileStatus::cases())->map->name),
             ],

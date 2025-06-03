@@ -14,8 +14,6 @@ class EloquentProfileService implements ProfileServiceInterface
 {
     /**
      * Retrieve a profile
-     *
-     * @return \Illuminate\Database\Eloquent\Collection<int, Profile>
      */
     public function get(int $id): ProfileData
     {
@@ -28,8 +26,6 @@ class EloquentProfileService implements ProfileServiceInterface
 
     /**
      * Retrieve all the profiles
-     *
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
     public function getAll(): \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
     {
@@ -44,9 +40,6 @@ class EloquentProfileService implements ProfileServiceInterface
 
     /**
      * Create a profile
-     *
-     * @param ProfileData $data
-     * @return ProfileData
      */
     public function create(ProfileData $data): ProfileData
     {
@@ -64,14 +57,13 @@ class EloquentProfileService implements ProfileServiceInterface
 
         // We create the profile
         $profile = Profile::query()->create([
-            'firstname' => $data->firstname,
-            'lastname' => $data->lastname,
+            'firstname'           => $data->firstname,
+            'lastname'            => $data->lastname,
             'image_original_name' => $imageOriginalName,
-            'image_name' => $imageName,
-            'status' => $data->status->name,
-            'user_id' => $data->user->id,
+            'image_name'          => $imageName,
+            'status'              => $data->status->name,
+            'user_id'             => $data->user->id,
         ]);
-
 
         // We load the user relation
         $profile->load('user');
@@ -82,9 +74,6 @@ class EloquentProfileService implements ProfileServiceInterface
 
     /**
      * Update a profile
-     *
-     * @param ProfileData $data
-     * @return ProfileData
      */
     public function update(ProfileData $data): ProfileData
     {
@@ -100,9 +89,6 @@ class EloquentProfileService implements ProfileServiceInterface
 
         // If we have a new image
         if ($data->image) {
-            // We should have an image
-            Assert::isInstanceOf($data->image, UploadedFile::class);
-
             // We store the file
             $imageName = $data->image->store('profile/image');
 
@@ -113,16 +99,17 @@ class EloquentProfileService implements ProfileServiceInterface
             $imageOriginalName = $data->image->getClientOriginalName();
 
             // We delete the old image
+            Assert::stringNotEmpty($profile->image_name);
             Storage::disk('local')->delete($profile->image_name);
         }
 
         // We update the profile
         $profile->update([
-            'firstname' => $data->firstname,
-            'lastname' => $data->lastname,
+            'firstname'           => $data->firstname,
+            'lastname'            => $data->lastname,
             'image_original_name' => $imageOriginalName,
-            'image_name' => $imageName,
-            'status' => $data->status->name,
+            'image_name'          => $imageName,
+            'status'              => $data->status->name,
         ]);
 
         // We return the profile data
@@ -131,9 +118,6 @@ class EloquentProfileService implements ProfileServiceInterface
 
     /**
      * We delete the profile
-     *
-     * @param ProfileData $data
-     * @return bool
      */
     public function delete(ProfileData $data): bool
     {
@@ -144,9 +128,10 @@ class EloquentProfileService implements ProfileServiceInterface
         $profile = Profile::query()->findOrFail($data->id);
 
         // We delete the image
+        Assert::stringNotEmpty($profile->image_name);
         Storage::disk('local')->delete($profile->image_name);
 
         // We delete the profile
-        return $profile->delete();
+        return $profile->delete() ?? false;
     }
 }

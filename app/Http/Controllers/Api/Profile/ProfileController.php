@@ -14,6 +14,7 @@ use App\Http\Resources\Api\Profile\ProfileResource;
 use App\Interfaces\Services\Profile\ProfileServiceInterface;
 use App\Models\Profile\Profile;
 use Illuminate\Http\JsonResponse;
+use Webmozart\Assert\Assert;
 
 class ProfileController extends Controller
 {
@@ -35,16 +36,16 @@ class ProfileController extends Controller
 
     /**
      * Create a profile
-     *
-     * @param StoreProfileRequest $request
-     * @return ProfileResource
      */
     public function store(StoreProfileRequest $request): ProfileResource
     {
+        $status = $request->validated('status');
+        Assert::stringNotEmpty($status);
+
         // We create the dto
         $profileData = ProfileData::from($request->validated(), [
-            'user' => auth('api')->user(),
-            'status' => ProfileStatus::from($request->validated('status')),
+            'user'   => auth('api')->user(),
+            'status' => ProfileStatus::from($status),
         ]);
 
         // We create the profile
@@ -56,17 +57,16 @@ class ProfileController extends Controller
 
     /**
      * Update a profile
-     *
-     * @param UpdateProfileRequest $request
-     * @param Profile $profile
-     * @return ProfileResource
      */
     public function update(UpdateProfileRequest $request, Profile $profile): ProfileResource
     {
+        $status = $request->validated('status');
+        Assert::stringNotEmpty($status);
+
         // We create the dto
         $profileData = ProfileData::from($profile->toArray(), $request->validated(), [
-            'user' => $profile->user,
-            'status' => ProfileStatus::from($request->validated('status')),
+            'user'   => $profile->user,
+            'status' => ProfileStatus::from($status),
         ]);
 
         // We update the profile
@@ -78,16 +78,12 @@ class ProfileController extends Controller
 
     /**
      * Delete a profile
-     *
-     * @param DestroyProfileRequest $request
-     * @param Profile $profile
-     * @return JsonResponse
      */
     public function destroy(DestroyProfileRequest $request, Profile $profile): JsonResponse
     {
         // We create the dto
         $profileData = ProfileData::from($profile->toArray(), [
-            'user' => $profile->user,
+            'user'   => $profile->user,
             'status' => ProfileStatus::from($profile->status),
         ]);
 

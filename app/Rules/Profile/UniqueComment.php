@@ -5,11 +5,12 @@ namespace App\Rules\Profile;
 use App\Interfaces\Services\Profile\CommentServiceInterface;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Webmozart\Assert\Assert;
 
-class UniqueComment implements ValidationRule
+readonly class UniqueComment implements ValidationRule
 {
     public function __construct(
-        private readonly CommentServiceInterface $commentService
+        private CommentServiceInterface $commentService
     ) {}
 
     /**
@@ -19,7 +20,11 @@ class UniqueComment implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($attribute === 'profile_id' && ! $this->commentService->check($value, auth('api')->id())) {
+        $userId = auth('api')->id();
+        Assert::integer($userId);
+        Assert::integer($value);
+
+        if ($attribute === 'profile_id' && ! $this->commentService->check($value, $userId)) {
             $fail('There is already a comment on this profile.');
         }
     }

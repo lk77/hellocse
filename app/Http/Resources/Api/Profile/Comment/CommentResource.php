@@ -19,12 +19,12 @@ class CommentResource extends JsonResource
         $commentData = $this->resource;
 
         return [
-            'id' => $commentData->id,
-            'content' => $commentData->content,
-            'user_id' => $commentData->user->id,
-            'user' => $commentData->user,
+            'id'         => $commentData->id,
+            'content'    => $commentData->content,
+            'user_id'    => $commentData->user->id,
+            'user'       => $commentData->user,
             'profile_id' => $commentData->profileData->id,
-            'profile' => $commentData->profileData,
+            'profile'    => $commentData->profileData,
         ];
     }
 

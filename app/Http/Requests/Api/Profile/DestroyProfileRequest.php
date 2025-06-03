@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Api\Profile;
 
-use App\Enums\Profile\ProfileStatus;
-use App\Models\Profile\Profile;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class DestroyProfileRequest extends FormRequest
 {
@@ -14,7 +11,7 @@ class DestroyProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('api')->check() && $this->user('api')->can('delete', $this->route('profile'));
+        return auth('api')->check() && $this->user('api')?->can('delete', $this->route('profile'));
     }
 
     /**

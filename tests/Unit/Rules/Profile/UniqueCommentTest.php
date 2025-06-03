@@ -5,7 +5,11 @@ namespace Tests\Unit\Rules\Profile;
 use App\Interfaces\Services\Profile\CommentServiceInterface;
 use App\Models\Profile\Comment;
 use App\Rules\Profile\UniqueComment;
+use Illuminate\Support\Facades\Validator;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class UniqueCommentTest extends TestCase
 {
@@ -19,14 +23,24 @@ class UniqueCommentTest extends TestCase
             $mock->shouldReceive('check')->andReturnFalse();
         });
 
-        $rule = new UniqueComment($commentService);
+        Assert::implementsInterface($comment->user, OAuthenticatable::class);
+        Passport::actingAs($comment->user);
 
-        $this->actingAs($comment->user, 'api');
+        // We test the rule with the validator
+        $validator = Validator::make(
+            [
+                'profile_id' => $comment->profile_id,
+            ],
+            [
+                'profile_id' => [new UniqueComment($commentService)],
+            ]
+        );
 
-        // We check the validation error
-        $rule->validate('profile_id', $comment->profile_id, function (string $message) {
-            $this->assertSame('There is already a comment on this profile.', $message);
-        });
+        // We shoud have failed
+        $this->assertFalse($validator->passes());
+
+        // We check the error message
+        $this->assertSame('There is already a comment on this profile.', $validator->getMessageBag()->first());
     }
 
     public function test_pass_when_comment_does_not_exists(): void
@@ -39,17 +53,20 @@ class UniqueCommentTest extends TestCase
             $mock->shouldReceive('check')->andReturnTrue();
         });
 
-        $rule = new UniqueComment($commentService);
+        Assert::implementsInterface($comment->user, OAuthenticatable::class);
+        Passport::actingAs($comment->user);
 
-        $this->actingAs($comment->user, 'api');
-
-        // We check the validation error
-        $failed = false;
-        $rule->validate('profile_id', $comment->profile_id, function () use (&$failed) {
-            $failed = true;
-        });
+        // We test the rule with the validator
+        $validator = Validator::make(
+            [
+                'profile_id' => $comment->profile_id,
+            ],
+            [
+                'profile_id' => [new UniqueComment($commentService)],
+            ]
+        );
 
         // We shoud not have failed
-        $this->assertFalse($failed);
+        $this->assertTrue($validator->passes());
     }
 }

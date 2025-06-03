@@ -3,8 +3,10 @@
 namespace Api\Profile\Comment;
 
 use App\Models\Profile\Comment;
+use App\Models\User\User;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class StoreCommentTest extends TestCase
 {
@@ -14,14 +16,22 @@ class StoreCommentTest extends TestCase
         $comment = Comment::factory()->make();
 
         // We give the permission to create a comment
+        Assert::isInstanceOf($comment->user, User::class);
         $comment->user->givePermissionTo(Permission::query()->where(['name' => 'comment.create', 'guard_name' => 'api'])->firstOrFail());
 
         // We create a token
         $result = $comment->user->createToken('test');
 
-        // We retrieve the json from the endpoint
+        /** @var array{
+         *           data: array{
+         *               content: string,
+         *               user_id: string,
+         *               profile_id: string
+         *           }
+         * } $json We retrieve the json from the endpoint
+         */
         $json = $this->withToken($result->accessToken)->post(route('comment.store'), [
-            'content' => $comment->content,
+            'content'    => $comment->content,
             'profile_id' => $comment->profile_id,
         ])->assertSuccessful()->json();
 
@@ -40,14 +50,22 @@ class StoreCommentTest extends TestCase
         $comment = Comment::factory()->make();
 
         // We give the permission to create a comment
+        Assert::isInstanceOf($comment->user, User::class);
         $comment->user->givePermissionTo(Permission::query()->where(['name' => 'comment.create', 'guard_name' => 'api'])->firstOrFail());
 
         // We create a token
         $result = $comment->user->createToken('test');
 
-        // We retrieve the json from the endpoint
+        /** @var array{
+         *           data: array{
+         *               content: string,
+         *               user_id: string,
+         *               profile_id: string
+         *           }
+         * } $json We retrieve the json from the endpoint
+         */
         $json = $this->withToken($result->accessToken)->post(route('comment.store'), [
-            'content' => $comment->content,
+            'content'    => $comment->content,
             'profile_id' => $comment->profile_id,
         ])->assertSuccessful()->json();
 
@@ -61,7 +79,7 @@ class StoreCommentTest extends TestCase
 
         // We should have a validation error if we submit another comment
         $this->withToken($result->accessToken)->post(route('comment.store'), [
-            'content' => $comment->content.' 2',
+            'content'    => $comment->content.' 2',
             'profile_id' => $comment->profile_id,
         ])->assertJsonValidationErrorFor('profile_id');
     }
@@ -73,7 +91,7 @@ class StoreCommentTest extends TestCase
 
         // We retrieve the json from the endpoint
         $this->post(route('comment.store'), [
-            'content' => $comment->content,
+            'content'    => $comment->content,
             'profile_id' => $comment->profile_id,
         ])->assertUnauthorized();
     }

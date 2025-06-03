@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api\Profile;
 
 use App\Enums\Profile\ProfileStatus;
-use App\Models\Profile\Profile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +13,7 @@ class UpdateProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('api')->check() && $this->user('api')->can('update', $this->route('profile'));
+        return auth('api')->check() && $this->user('api')?->can('update', $this->route('profile'));
     }
 
     /**
@@ -26,9 +25,9 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png',
-            'status' => [
+            'lastname'  => 'required|string|max:255',
+            'image'     => 'required|image|mimes:jpeg,png',
+            'status'    => [
                 'required',
                 Rule::in(collect(ProfileStatus::cases())->map->name),
             ],

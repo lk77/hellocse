@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $teams = config('permission.teams');
-        $tableNames = config('permission.table_names');
-        $columnNames = config('permission.column_names');
+        $teams = Config::boolean('permission.teams');
+        $tableNames = Config::array('permission.table_names');
+        $columnNames = Config::array('permission.column_names');
         $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
         $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
 
@@ -112,8 +112,8 @@ return new class extends Migration
         });
 
         app('cache')
-            ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
-            ->forget(config('permission.cache.key'));
+            ->store(Config::string('permission.cache.store') != 'default' ? Config::string('permission.cache.store') : null)
+            ->forget(Config::string('permission.cache.key'));
     }
 
     /**
@@ -121,7 +121,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        $tableNames = config('permission.table_names');
+        $tableNames = Config::array('permission.table_names');
 
         if (empty($tableNames)) {
             throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');

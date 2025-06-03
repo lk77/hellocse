@@ -8,6 +8,7 @@ use App\Models\Profile\Comment;
 use App\Models\Profile\Profile;
 use App\Services\Profile\EloquentCommentService;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class EloquentCommentServiceTest extends TestCase
 {
@@ -25,6 +26,8 @@ class EloquentCommentServiceTest extends TestCase
         /* @var Profile $profile We create a profile */
         $profile = Profile::factory()->create();
 
+        Assert::integer($profile->user_id);
+
         // We should be allowed to create a comment
         $this->assertTrue($this->commentService->check($profile->id, $profile->user_id));
     }
@@ -34,10 +37,12 @@ class EloquentCommentServiceTest extends TestCase
         /* @var Profile $profile We create a profile */
         $profile = Profile::factory()->create();
 
+        Assert::integer($profile->user_id);
+
         /* @var Comment $comment We create a comment */
         Comment::factory()->create([
             'profile_id' => $profile->id,
-            'user_id' => $profile->user_id,
+            'user_id'    => $profile->user_id,
         ]);
 
         // We should not be allowed to create another comment
@@ -50,7 +55,7 @@ class EloquentCommentServiceTest extends TestCase
         $comment = Comment::factory()->make();
 
         $commentData = CommentData::from([
-            'content' => $comment->content,
+            'content'     => $comment->content,
             'profileData' => ProfileData::from($comment->profile, [
                 'user' => $comment->user,
             ]),
@@ -65,9 +70,9 @@ class EloquentCommentServiceTest extends TestCase
 
         // We should have the comment in database
         $this->assertDatabaseHas('comments', [
-            'content' => $comment->content,
+            'content'    => $comment->content,
             'profile_id' => $comment->profile_id,
-            'user_id' => $comment->user->id,
+            'user_id'    => $comment->user?->id,
         ]);
     }
 }

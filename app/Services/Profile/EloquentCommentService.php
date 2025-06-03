@@ -17,7 +17,7 @@ class EloquentCommentService implements CommentServiceInterface
     {
         return Comment::query()->where([
             'profile_id' => $profileId,
-            'user_id' => $userId,
+            'user_id'    => $userId,
         ])->count() === 0;
     }
 
@@ -27,13 +27,14 @@ class EloquentCommentService implements CommentServiceInterface
     public function create(CommentData $data): CommentData
     {
         // We should not have any comment for that user and profile
+        Assert::integer($data->profileData->id);
         Assert::true($this->check($data->profileData->id, $data->user->id), 'There is already a comment on this profile.');
 
         // We create a comment
         $comment = Comment::query()->create([
-            'content' => $data->content,
+            'content'    => $data->content,
             'profile_id' => $data->profileData->id,
-            'user_id' => $data->user->id,
+            'user_id'    => $data->user->id,
         ]);
 
         // We load the profile and user relations

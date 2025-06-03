@@ -41,6 +41,6 @@ return [
     |
     */
 
-    'connection' => env('PASSPORT_CONNECTION'),
+    'connection' => env('PASSPORT_CONNECTION', env('DB_CONNECTION', 'sqlite')),
 
 ];

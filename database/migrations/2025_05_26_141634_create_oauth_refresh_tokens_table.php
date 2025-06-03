@@ -30,8 +30,8 @@ return new class extends Migration
     /**
      * Get the migration connection name.
      */
-    public function getConnection(): ?string
+    public function getConnection(): string
     {
-        return $this->connection ?? config('passport.connection');
+        return $this->connection ?? Config::string('passport.connection');
     }
 };

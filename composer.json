@@ -11,18 +11,22 @@
         "laravel/framework": "^11.31",
         "laravel/passport": "^13.0",
         "laravel/tinker": "^2.9",
+        "phpstan/phpstan-webmozart-assert": "^2.0",
         "spatie/laravel-data": "^4.15",
-        "spatie/laravel-permission": "^6.18"
+        "spatie/laravel-permission": "^6.18",
+        "thecodingmachine/phpstan-safe-rule": "^1.4"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",
         "beyondcode/laravel-dump-server": "^2.1",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
@@ -64,6 +68,8 @@
         }
     },
     "config": {
+        "secure-http" : false,
+        "disable-tls" : true,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
@@ -73,5 +79,14 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "packagist.org": false
+        },
+        {
+            "type": "composer",
+            "url": "http://nexus.prd.gra.intra.groupama.fr:8081/repository/composer-proxy/"
+        }
+    ]
 }

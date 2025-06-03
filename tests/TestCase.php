@@ -21,6 +21,6 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('db:seed');
 
         // We create a personal access token client
-        $this->personalAccessTokenClient = ClientFactory::new()->asPersonalAccessTokenClient()->create();
+        $this->personalAccessTokenClient = ClientFactory::new()->asPersonalAccessTokenClient()->createOne();
     }
 }

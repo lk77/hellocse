@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Api\Profile\Comment;
 
-use App\Enums\Profile\ProfileStatus;
-use App\Models\Profile\Profile;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateCommentRequest extends FormRequest
 {
@@ -14,7 +11,7 @@ class UpdateCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('api')->check() && $this->user('api')->can('update', $this->route('comment'));
+        return auth('api')->check() && $this->user('api')?->can('update', $this->route('comment'));
     }
 
     /**
@@ -25,7 +22,7 @@ class UpdateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|max:1024',
+            'content'    => 'required|string|max:1024',
             'profile_id' => 'required|integer',
         ];
     }

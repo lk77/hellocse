@@ -6,9 +6,14 @@ use App\Data\Profile\ProfileData;
 use App\Enums\Profile\ProfileStatus;
 use App\Models\Profile\Profile;
 use App\Services\Profile\EloquentProfileService;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Tests\TestCase;
+use Webmozart\Assert\Assert;
 
 class EloquentProfileServiceTest extends TestCase
 {
@@ -21,12 +26,16 @@ class EloquentProfileServiceTest extends TestCase
         $this->profileService = app(EloquentProfileService::class);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function test_can_get_a_profile(): void
     {
         /* @var Profile $profile We create a profile */
         $profile = Profile::factory()->create();
 
-        // We recover the profile data
+        /* @var ProfileData $profileData We recover the profile data */
         $profileData = $this->profileService->get($profile->id);
 
         // We check the attributes
@@ -41,15 +50,16 @@ class EloquentProfileServiceTest extends TestCase
 
     public function test_can_get_all_profiles(): void
     {
-        /* @var Profile[] $profiles We create some profiles */
+        /* @var Collection<int, Profile> $profiles We create some profiles */
         $profiles = Profile::factory(5)->create();
 
-        // We recover the profile datas
+        /* @var Collection<int, ProfileData> $profileDatas We recover the profile datas */
         $profileDatas = $this->profileService->getAll();
 
         foreach ($profiles as $index => $profile) {
             // We recover profile data
             $profileData = $profileDatas[$index];
+            Assert::isInstanceOf($profileData, ProfileData::class);
 
             // We check the attributes
             $this->assertSame($profile->id, $profileData->id);
@@ -65,19 +75,24 @@ class EloquentProfileServiceTest extends TestCase
         $this->assertCount(5, $profileDatas);
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function test_can_store_a_profile(): void
     {
         /* @var Profile $profile We make a profile */
         $profile = Profile::factory()->make();
 
+        Assert::stringNotEmpty($profile->image_original_name);
+
         $profileData = ProfileData::from([
             'firstname' => $profile->firstname,
-            'lastname' => $profile->lastname,
-            'image' => UploadedFile::fake()->createWithContent(
+            'lastname'  => $profile->lastname,
+            'image'     => UploadedFile::fake()->createWithContent(
                 $profile->image_original_name,
                 File::get('/tmp/'.$profile->image_name)
             ),
-            'user' => $profile->user,
+            'user'   => $profile->user,
             'status' => ProfileStatus::from($profile->status),
         ]);
 
@@ -89,10 +104,10 @@ class EloquentProfileServiceTest extends TestCase
 
         // We should have the profile in database
         $this->assertDatabaseHas('profiles', [
-            'firstname' => $profile->firstname,
-            'lastname' => $profile->lastname,
+            'firstname'           => $profile->firstname,
+            'lastname'            => $profile->lastname,
             'image_original_name' => $profile->image_original_name,
-            'user_id' => $profile->user->id,
+            'user_id'             => $profile->user?->id,
         ]);
     }
 
@@ -104,15 +119,17 @@ class EloquentProfileServiceTest extends TestCase
             'updated_at' => now()->subMinute(),
         ]);
 
+        Assert::stringNotEmpty($profile->image_original_name);
+
         $profileData = ProfileData::from([
-            'id' => $profile->id,
+            'id'        => $profile->id,
             'firstname' => $profile->firstname,
-            'lastname' => $profile->lastname,
-            'image' => UploadedFile::fake()->createWithContent(
+            'lastname'  => $profile->lastname,
+            'image'     => UploadedFile::fake()->createWithContent(
                 $profile->image_original_name,
                 File::get('/tmp/'.$profile->image_name)
             ),
-            'user' => $profile->user,
+            'user'   => $profile->user,
             'status' => ProfileStatus::from($profile->status),
         ]);
 
@@ -134,15 +151,17 @@ class EloquentProfileServiceTest extends TestCase
             'updated_at' => now()->subMinute(),
         ]);
 
+        Assert::stringNotEmpty($profile->image_original_name);
+
         $profileData = ProfileData::from([
-            'id' => $profile->id,
+            'id'        => $profile->id,
             'firstname' => $profile->firstname,
-            'lastname' => $profile->lastname,
-            'image' => UploadedFile::fake()->createWithContent(
+            'lastname'  => $profile->lastname,
+            'image'     => UploadedFile::fake()->createWithContent(
                 $profile->image_original_name,
                 File::get('/tmp/'.$profile->image_name)
             ),
-            'user' => $profile->user,
+            'user'   => $profile->user,
             'status' => ProfileStatus::from($profile->status),
         ]);
 
@@ -154,5 +173,4 @@ class EloquentProfileServiceTest extends TestCase
             'id' => $profile->id,
         ]);
     }
-
 }

@@ -19,14 +19,14 @@ class ProfileResource extends JsonResource
         $profileData = $this->resource;
 
         return [
-            'id' => $profileData->id,
-            'firstname' => $profileData->firstname,
-            'lastname' => $profileData->lastname,
+            'id'                  => $profileData->id,
+            'firstname'           => $profileData->firstname,
+            'lastname'            => $profileData->lastname,
             'image_original_name' => $profileData->image_original_name,
-            'image_name' => $profileData->image_name,
-            'status' => $this->when(auth('api')->check(), fn () => $profileData->status),
-            'user_id' => $profileData->user->id,
-            'user' => $profileData->user,
+            'image_name'          => $profileData->image_name,
+            'status'              => $this->when(auth('api')->check(), fn () => $profileData->status),
+            'user_id'             => $profileData->user->id,
+            'user'                => $profileData->user,
         ];
     }
 
